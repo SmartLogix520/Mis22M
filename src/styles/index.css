@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* =========================
-   🎨 DESIGN SYSTEM (LIGHT)
-========================= */
 :root {
   --text: #000000;
   --bg: #ffffff;
@@ -19,19 +16,6 @@
   --font-sans: "Montserrat", system-ui, sans-serif;
   --font-heading: "Didot", "Playfair Display", serif;
   --font-mono: ui-monospace, Consolas, monospace;
-}
-
-/* =========================
-   🌙 DARK MODE (TAILWIND)
-========================= */
-.dark {
-  --text: #9ca3af;
-  --bg: #16171d;
-  --border: #2e303a;
-  --primary: #fe95ee;
-
-  --shadow:
-    rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
 }
 
 /* =========================
