@@ -12,4 +12,6 @@ export default function ProductCard({ product }: { product: Product }) {
             <p>{product.price} DA</p>
         </div>
     );
+
+
 }
