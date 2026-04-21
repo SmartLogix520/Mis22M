@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   🎨 DESIGN SYSTEM (LIGHT)
+========================= */
+:root {
+  --text: #000000;
+  --bg: #ffffff;
+  --border: #e5e4e7;
+  --primary: #f6cbd2;
+  --hover: #770059;
+
+  --shadow:
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
+  /* Fonts */
+  --font-sans: "Montserrat", system-ui, sans-serif;
+  --font-heading: "Didot", "Playfair Display", serif;
+  --font-mono: ui-monospace, Consolas, monospace;
+}
+
+/* =========================
+   🌙 DARK MODE (TAILWIND)
+========================= */
+.dark {
+  --text: #9ca3af;
+  --bg: #16171d;
+  --border: #2e303a;
+  --primary: #fe95ee;
+
+  --shadow:
+    rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+}
+
+/* =========================
+   🧱 BASE STYLES
+========================= */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Body global */
+body {
+  font-family: var(--font-sans);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+/* =========================
+   ✍️ TYPOGRAPHY
+========================= */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  color: var(--text-h);
+}
+
+/* Code blocks */
+code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+}
+
+/* =========================
+   🎯 UTILITIES CUSTOM
+========================= */
+.shadow-custom {
+  box-shadow: var(--shadow);
+}
+
+/* Responsive font */
+@media (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+.animation-delay-0 {
+  animation-delay: 0s;
+}
+.animation-delay-5 {
+  animation-delay: 5s;
+}
+.break-inside-avoid {
+  break-inside: avoid;
+}
+@keyframes slowZoom {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-slowzoom {
+  animation: slowZoom 10s ease-in-out infinite;
+  will-change: transform;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE et Edge */
+  scrollbar-width: none; /* Firefox */
+}
