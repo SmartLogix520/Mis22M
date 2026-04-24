@@ -61,9 +61,9 @@ export default function BestSellers() {
               <div className="mt-2 flex justify-between items-center">
                 <span className="font-bold">{item.price} DA</span>
 
-                <button className="bg-[var(--primary)] text-[var(--text)] text-xs px-3 py-1 rounded-md">
+                {/* <button className="bg-[var(--primary)] text-[var(--text)] text-xs px-3 py-1 rounded-md">
                   AJOUTER
-                </button>
+                </button> */}
               </div>
             </div>
           ))}

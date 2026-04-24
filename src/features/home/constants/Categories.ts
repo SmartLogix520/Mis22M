@@ -3,7 +3,7 @@ export const categories = [
     id: 1,
     title: "Lèvres",
     image: "/assets/levres.png",
-    slug: "Lèvres",
+    slug: "levres",
   },
   {
     id: 2,

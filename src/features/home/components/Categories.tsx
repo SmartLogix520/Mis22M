@@ -24,7 +24,7 @@ export default function Categories() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{
               duration: 0.5,
-              delay: index * 0.08, // effet cascade
+              delay: index * 0.08,
               ease: "easeOut",
             }}
           >

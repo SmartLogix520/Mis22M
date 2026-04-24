@@ -33,7 +33,7 @@ export default function Navbar() {
             to="/categories"
             className="hover:text-[var(--hover)] transition"
           >
-            Categories
+            Produits
           </Link>
 
           <Link
@@ -69,7 +69,7 @@ export default function Navbar() {
             onClick={() => setOpen(false)}
             className="py-2 hover:text-[var(--hover)] transition"
           >
-            Categories
+            Produits
           </Link>
 
           <Link
