@@ -1,4 +1,5 @@
 import { BiMap } from "react-icons/bi";
+import { Button } from "./ui/button";
 
 export default function LocationButton() {
   return (
@@ -7,9 +8,13 @@ export default function LocationButton() {
       <BiMap className="w-12 h-12 text-[var(--primary)] mb-3" />
 
       {/* Bouton */}
-      <button className="px-10 py-4 bg-[var(--primary)] text-black text-lg font-semibold shadow-md hover:opacity-90 transition">
+      <Button
+        variant="default"
+        size="lg"
+        className="text-lg font-semibold shadow-md"
+      >
         Trouver un point de vente
-      </button>
+      </Button>
     </div>
   );
 }

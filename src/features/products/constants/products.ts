@@ -1,5 +1,12 @@
 export type Category = "levres" | "yeux" | "teint";
+export interface Review {
+  id: number;
+  rating: number;
 
+  comment: string;
+  author: string;
+  date: string;
+}
 export interface Product {
   id: string;
   name: string;
@@ -12,8 +19,7 @@ export interface Product {
 
   description: string;
 
-  rating: number;
-  reviews: number;
+  reviewsData: Review[]; // 🔥 les vrais commentaires
 
   colors?: string[]; // hex colors
 
@@ -38,8 +44,208 @@ export const products: Product[] = [
     description:
       "Un rouge à lèvres au fini mat intense qui offre une tenue longue durée sans dessécher les lèvres.",
 
-    rating: 4.5,
-    reviews: 32,
+    reviewsData: [
+      {
+        id: 1,
+        rating: 5,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 2,
+        rating: 4,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+      {
+        id: 13,
+        rating: 3,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 12,
+        rating: 2,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+      {
+        id: 11,
+        rating: 1,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 21,
+        rating: 2,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+    ],
+
+    colors: ["#8B0000", "#B22222", "#DC143C"],
+
+    details: ["Fini mat velouté", "Longue tenue", "Texture confortable"],
+    ingredients: ["Aqua", "Glycerin", "Parfum", "Vitamin E"],
+    isBestSeller: true,
+    gallery: [
+      "/assets/levres.png",
+      "/assets/yeux.png",
+      "/assets/teint.png",
+      "/assets/tuto.png",
+    ],
+  },
+  {
+    id: "22",
+    name: "Rouge à lèvres matte",
+    category: "levres",
+
+    price: 1200,
+    oldPrice: 1500,
+
+    images: ["/assets/levres.png", "/assets/levres.png"],
+
+    description:
+      "Un rouge à lèvres au fini mat intense qui offre une tenue longue durée sans dessécher les lèvres.",
+
+    reviewsData: [
+      {
+        id: 1,
+        rating: 5,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 2,
+        rating: 4,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+      {
+        id: 13,
+        rating: 3,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 12,
+        rating: 2,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+      {
+        id: 11,
+        rating: 1,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 21,
+        rating: 2,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+    ],
+
+    colors: ["#8B0000", "#B22222", "#DC143C"],
+
+    details: ["Fini mat velouté", "Longue tenue", "Texture confortable"],
+    ingredients: ["Aqua", "Glycerin", "Parfum", "Vitamin E"],
+    isBestSeller: true,
+    gallery: [
+      "/assets/levres.png",
+      "/assets/yeux.png",
+      "/assets/teint.png",
+      "/assets/tuto.png",
+    ],
+  },
+  {
+    id: "31",
+    name: "Rouge à lèvres matte",
+    category: "levres",
+
+    price: 1200,
+    oldPrice: 1500,
+
+    images: ["/assets/levres.png", "/assets/levres.png"],
+
+    description:
+      "Un rouge à lèvres au fini mat intense qui offre une tenue longue durée sans dessécher les lèvres.",
+
+    reviewsData: [
+      {
+        id: 1,
+        rating: 5,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 2,
+        rating: 4,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+      {
+        id: 13,
+        rating: 3,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 12,
+        rating: 2,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+      {
+        id: 11,
+        rating: 1,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 21,
+        rating: 2,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+    ],
 
     colors: ["#8B0000", "#B22222", "#DC143C"],
 
@@ -66,8 +272,24 @@ export const products: Product[] = [
     description:
       "Un gloss ultra brillant qui apporte volume et hydratation aux lèvres.",
 
-    rating: 4.3,
-    reviews: 21,
+    reviewsData: [
+      {
+        id: 1,
+        rating: 5,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 2,
+        rating: 4,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+    ],
 
     colors: ["#FFC0CB", "#FF69B4"],
 
@@ -97,8 +319,24 @@ export const products: Product[] = [
     description:
       "Mascara volumisant pour des cils plus épais et plus longs dès le premier passage.",
 
-    rating: 4.7,
-    reviews: 45,
+    reviewsData: [
+      {
+        id: 1,
+        rating: 5,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 2,
+        rating: 4,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+    ],
 
     details: ["Volume intense", "Allonge les cils", "Ne fait pas de paquets"],
     ingredients: ["Aqua", "Glycerin", "Parfum", "Vitamin E"],
@@ -123,8 +361,24 @@ export const products: Product[] = [
     description:
       "Un eyeliner liquide avec une pointe précise pour un tracé net et intense.",
 
-    rating: 4.4,
-    reviews: 28,
+    reviewsData: [
+      {
+        id: 1,
+        rating: 5,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 2,
+        rating: 4,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+    ],
 
     details: ["Noir profond", "Application facile", "Tenue longue durée"],
     ingredients: ["Aqua", "Glycerin", "Parfum", "Vitamin E"],
@@ -149,8 +403,24 @@ export const products: Product[] = [
     description:
       "Fond de teint fluide offrant une couvrance modulable pour un teint naturel et uniforme.",
 
-    rating: 4.6,
-    reviews: 38,
+    reviewsData: [
+      {
+        id: 1,
+        rating: 5,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 2,
+        rating: 4,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+    ],
 
     colors: ["#F5D6C6", "#EAC1A3", "#D8A07A"],
 
@@ -176,8 +446,24 @@ export const products: Product[] = [
     description:
       "Poudre légère qui matifie la peau et fixe le maquillage toute la journée.",
 
-    rating: 4.2,
-    reviews: 19,
+    reviewsData: [
+      {
+        id: 1,
+        rating: 5,
+
+        comment: "Excellente tenue toute la journée",
+        author: "Lina - Algérie",
+        date: "26/05/2026",
+      },
+      {
+        id: 2,
+        rating: 4,
+
+        comment: "Bonne qualité mais un peu sec",
+        author: "Sara - France",
+        date: "20/05/2026",
+      },
+    ],
 
     details: ["Matifie instantanément", "Fixe le maquillage", "Texture légère"],
     ingredients: ["Aqua", "Glycerin", "Parfum", "Vitamin E"],

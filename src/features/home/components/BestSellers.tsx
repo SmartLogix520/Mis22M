@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { bestSellers } from "../constants/bestSellersData";
+import { products } from "../../products/constants/products";
+import ProductCard from "../../products/components/ProductCard"; // adapte le chemin
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { motion } from "framer-motion";
 
@@ -16,7 +17,7 @@ export default function BestSellers() {
       behavior: "smooth",
     });
   };
-
+  const bestSellers = products.filter((p) => p.isBestSeller);
   return (
     <motion.section
       initial={{ opacity: 0, y: 40 }}
@@ -45,26 +46,14 @@ export default function BestSellers() {
           className="flex gap-4 overflow-x-auto scroll-smooth no-scrollbar"
         >
           {bestSellers.map((item) => (
-            <div
-              key={item.id}
-              className="min-w-[220px] bg-white rounded-xl shadow-md p-3"
-            >
-              <img
-                src={item.image}
-                className="w-full h-[180px] object-cover rounded-lg"
+            <div key={item.id} className="min-w-[220px]">
+              <ProductCard
+                id={item.id}
+                image={item.images[0]}
+                name={item.name}
+                price={item.price}
+                description={item.description}
               />
-
-              <h3 className="mt-2 font-semibold text-sm">{item.name}</h3>
-
-              <p className="text-xs text-gray-500">{item.description}</p>
-
-              <div className="mt-2 flex justify-between items-center">
-                <span className="font-bold">{item.price} DA</span>
-
-                {/* <button className="bg-[var(--primary)] text-[var(--text)] text-xs px-3 py-1 rounded-md">
-                  AJOUTER
-                </button> */}
-              </div>
             </div>
           ))}
         </div>

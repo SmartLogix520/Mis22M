@@ -5,7 +5,7 @@ import Favorites from "../components/Favorites";
 import AutoScrollGallery from "../components/AutoScrollGallery";
 import KeyFeaturesSection from "../components/KeyFeatures";
 import Footer from "../../../shared/components/Footer";
-import LocationButton from "../components/FindUs";
+import LocationButton from "../../../shared/components/FindUs";
 
 export default function Home() {
   return (

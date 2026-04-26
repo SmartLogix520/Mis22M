@@ -8,6 +8,7 @@ import {
   BiLogoPinterest,
   BiLogoYoutube,
 } from "react-icons/bi";
+import { Link } from "react-router-dom";
 
 const FooterSection = ({
   title,
@@ -57,9 +58,15 @@ export default function Footer() {
       {/* 📂 SECTIONS */}
       <div className="px-4">
         <FooterSection title="PRODUITS">
-          <p>Levres</p>
-          <p>Yeux</p>
-          <p>Teint</p>
+          <Link to="/category/levres" className="block hover:text-black">
+            Levres
+          </Link>
+          <Link to="/category/yeux" className="block hover:text-black">
+            Yeux
+          </Link>
+          <Link to="/category/teint" className="block hover:text-black">
+            Teint
+          </Link>
         </FooterSection>
 
         <FooterSection title="TENDANCES & LOOKS">
@@ -68,9 +75,12 @@ export default function Footer() {
         </FooterSection>
 
         <FooterSection title="À PROPOS">
-          <p>Notre histoire</p>
-          <p>Nos engagements</p>
-          <p>Contact</p>
+          <Link to="/about" className="block hover:text-black">
+            Notre histoire
+          </Link>
+          <Link to="/contact" className="block hover:text-black">
+            Contact
+          </Link>
         </FooterSection>
 
         <FooterSection title="CONDITIONS GÉNÉRALES">

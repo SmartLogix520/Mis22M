@@ -2,9 +2,11 @@ import { useParams } from "react-router-dom";
 import { products } from "../constants/products";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Star } from "lucide-react";
 import ProductGalleryCarousel from "../components/ProductGalleryCarousel";
 import Footer from "../../../shared/components/Footer";
+import ProductReviews from "../components/ProductReviews";
+import RelatedProducts from "../components/RelatedProducts";
+import LocationButton from "../../../shared/components/FindUs";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -19,7 +21,9 @@ export default function ProductDetails() {
   if (!product) {
     return <div className="p-4 text-center">Produit introuvable</div>;
   }
-
+  const relatedProducts = products.filter(
+    (p) => p.category === product.category && p.id !== product.id,
+  );
   return (
     <div>
       <motion.section
@@ -59,24 +63,6 @@ export default function ProductDetails() {
             {/* title */}
             <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
 
-            {/* rating */}
-            <div className="flex items-center gap-1 mb-3">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  size={16}
-                  className={
-                    i < Math.round(product.rating)
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300"
-                  }
-                />
-              ))}
-              <span className="text-sm text-gray-500 ml-2">
-                {product.rating} ({product.reviews} avis)
-              </span>
-            </div>
-
             {/* price */}
             <div className="flex items-center gap-3 mb-4">
               <span className="text-xl font-bold">{product.price} DA</span>
@@ -107,11 +93,6 @@ export default function ProductDetails() {
                 </div>
               </div>
             )}
-
-            {/* button */}
-            <button className="w-full bg-[var(--primary)] text-black py-3 rounded-lg mb-6 hover:opacity-90 transition">
-              Trouver un point de vente
-            </button>
 
             {/* ================= ACCORDION ================= */}
             <div className="mt-6 border-t">
@@ -173,7 +154,12 @@ export default function ProductDetails() {
           </div>
         </div>
       </motion.section>
+      {/* button */}
+      <LocationButton />
       <ProductGalleryCarousel images={product.gallery || []} />
+      <ProductReviews reviews={product.reviewsData} />
+      <LocationButton />
+      <RelatedProducts products={relatedProducts} />
       <Footer />
     </div>
   );
