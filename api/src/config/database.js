@@ -14,7 +14,7 @@ export const connectDatabase = async () => {
         console.log('✅ Connexion à MongoDB réussie via Prisma');
     } catch (error) {
         console.error('❌ Erreur de connexion à MongoDB:', error);
-        process.exit(1);
+        throw error;
     }
 };
 
