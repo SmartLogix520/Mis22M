@@ -6,10 +6,18 @@ import fs from 'fs';
 
 const router = express.Router();
 
-// Créer le dossier s'il n'existe pas
-const uploadDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+// Dossier d'upload (support Vercel via /tmp)
+const isVercel = process.env.VERCEL === '1' || !!process.env.VERCEL;
+const uploadDir = isVercel 
+    ? path.join('/tmp', 'uploads') 
+    : path.join(process.cwd(), 'uploads');
+
+try {
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
+} catch (err) {
+    console.warn('⚠️ Impossible de créer le dossier d\'upload:', err.message);
 }
 
 // Configuration de multer

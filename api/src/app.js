@@ -57,7 +57,12 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Servir les fichiers d'images de façon statique
+// 1. Depuis le dossier du projet (images déployées)
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+// 2. Depuis /tmp (pour les nouveaux uploads temporaires sur Vercel)
+if (process.env.VERCEL) {
+    app.use('/uploads', express.static(path.join('/tmp', 'uploads')));
+}
 
 // Middleware pour connecter la DB avant chaque requête (Vercel cold start)
 let isConnected = false;
