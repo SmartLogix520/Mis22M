@@ -30,7 +30,7 @@ export default function Navbar() {
         {/* CENTER MENU (desktop only) */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
           <Link
-            to="/categories"
+            to="/produits"
             className="hover:text-[var(--hover)] transition"
           >
             Produits
@@ -43,8 +43,8 @@ export default function Navbar() {
             Best Sellers
           </Link>
 
-          <Link to="/reviews" className="hover:text-[var(--hover)] transition">
-            Reviews
+          <Link to="/points-de-vente" className="hover:text-[var(--hover)] transition">
+            Points de vente
           </Link>
         </nav>
 
@@ -65,7 +65,7 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden bg-[var(--primary)] border-t border-[var(--border)] px-4 py-3 flex flex-col gap-3">
           <Link
-            to="/categories"
+            to="/produits"
             onClick={() => setOpen(false)}
             className="py-2 hover:text-[var(--hover)] transition"
           >
@@ -81,11 +81,11 @@ export default function Navbar() {
           </Link>
 
           <Link
-            to="/reviews"
+            to="/points-de-vente"
             onClick={() => setOpen(false)}
             className="py-2 hover:text-[var(--hover)] transition"
           >
-            Reviews
+            Points de vente
           </Link>
         </div>
       )}

@@ -12,18 +12,18 @@ const ContactForm = () => {
     subject: "",
     message: "",
   });
-  const [focusedField, setFocusedField] = useState(null);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     // Ajoutez votre logique d'envoi ici
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name as keyof typeof formData]: e.target.value,
     });
   };
 
@@ -79,7 +79,7 @@ const ContactForm = () => {
                 <Input
                   type={field.type}
                   name={field.name}
-                  value={formData[field.name]}
+                  value={formData[field.name as keyof typeof formData]}
                   onChange={handleChange}
                   onFocus={() => setFocusedField(field.name)}
                   onBlur={() => setFocusedField(null)}

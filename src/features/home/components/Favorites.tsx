@@ -1,8 +1,21 @@
-import { favorites } from "../constants/favourites";
+import { useEffect, useState } from "react";
+import { favoriteVideosAPI, type FavoriteVideo } from "../../../services/api";
 import VideoCard from "./VideoCard";
 import { motion } from "framer-motion";
 
 export default function Favorites() {
+  const [favorites, setFavorites] = useState<FavoriteVideo[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    favoriteVideosAPI.getAll()
+      .then(res => setFavorites(res.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading || favorites.length === 0) return null;
+
   return (
     <motion.section
       className="px-4 py-6"
@@ -16,8 +29,7 @@ export default function Favorites() {
       </h2>
 
       <div className="relative">
-        {/* Carousel */}
-        <div className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+        <div className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory py-2">
           {favorites.map((item, index) => (
             <motion.div
               key={item.id}
@@ -31,12 +43,15 @@ export default function Favorites() {
                 ease: "easeOut",
               }}
             >
-              <VideoCard {...item} />
+              <VideoCard
+                video={item.video}
+                thumbnail={item.thumbnail || ""}
+                title={item.title}
+              />
             </motion.div>
           ))}
         </div>
 
-        {/* Shadow blanc à droite */}
         <div className="pointer-events-none absolute top-0 right-0 h-full w-20 bg-gradient-to-l from-white to-transparent" />
       </div>
     </motion.section>

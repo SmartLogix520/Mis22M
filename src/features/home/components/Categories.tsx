@@ -1,9 +1,21 @@
-import { categories } from "../constants/Categories";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { categoriesAPI, type Category } from "../../../services/api";
 
 export default function Categories() {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    categoriesAPI.getAll()
+      .then(res => setCategories(res.data.filter(c => c.isActive).sort((a,b) => a.order - b.order)))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading || categories.length === 0) return null;
 
   return (
     <motion.div
@@ -29,8 +41,8 @@ export default function Categories() {
             }}
           >
             <img
-              src={cat.image}
-              alt={cat.title}
+              src={cat.imageUrl || "/assets/placeholder.png"}
+              alt={cat.name}
               className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </motion.div>

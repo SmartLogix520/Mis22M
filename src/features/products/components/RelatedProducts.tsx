@@ -2,14 +2,7 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import ProductCard from "./ProductCard"; // adapte le chemin si besoin
-
-type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  images: string[];
-};
+import type { Product } from "../../../services/api";
 
 type Props = {
   products: Product[];
@@ -61,10 +54,10 @@ export default function RelatedProducts({
               <div key={item.id} className="min-w-[220px]">
                 <ProductCard
                   id={item.id}
-                  image={item.images[0]}
+                  image={item.images?.[0] || item.imageUrl || "/assets/placeholder.png"}
                   name={item.name}
-                  price={item.price}
-                  description={item.description}
+                  price={item.price || 0}
+                  description={item.shortDesc || item.description || ""}
                 />
               </div>
             ))}

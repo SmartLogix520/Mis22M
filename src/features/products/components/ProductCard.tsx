@@ -20,7 +20,7 @@ export default function ProductCard({
       onClick={() => navigate(`/product/${id}`)}
       className="bg-white rounded-xl shadow-md p-3"
     >
-      <img src={image} className="w-full h-[180px] object-cover rounded-lg" />
+      <img src={image} className="w-full h-[180px] object-contain rounded-lg" />
 
       <h3 className="mt-2 font-semibold text-sm">{name}</h3>
 

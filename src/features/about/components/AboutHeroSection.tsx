@@ -2,7 +2,12 @@ import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { useInView } from "framer-motion";
 
-const Counter = ({ value, suffix = "", duration = 2 }) => {
+interface CounterProps {
+  value: number;
+  suffix?: string;
+  duration?: number;
+}
+const Counter = ({ value, suffix = "", duration = 2 }: CounterProps) => {
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest));
   const ref = useRef(null);

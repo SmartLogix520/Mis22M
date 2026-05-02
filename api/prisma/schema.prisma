@@ -1,0 +1,170 @@
+// api/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ====================================
+// MODÈLE : Catégorie de Produits (paramétrable depuis l'admin)
+// ====================================
+model Category {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String  @unique // "Nettoyants", "Soins", "Crèmes", etc.
+  slug        String  @unique
+  description String?
+  imageUrl    String?
+  color       String? // Couleur hex pour l'UI admin
+  order       Int     @default(0) // Ordre d'affichage
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("categories")
+}
+
+// ====================================
+// MODÈLE : Gamme (paramétrable depuis l'admin)
+// ====================================
+model Range {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String  @unique // "Parapharmacie", "Pharmacie", "Grande Surface", etc.
+  slug        String  @unique
+  description String?
+  color       String? // Couleur hex pour badges/filtres
+  order       Int     @default(0)
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ranges")
+}
+
+// ====================================
+// MODÈLE : Produit
+// ====================================
+model Product {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  slug        String  @unique
+  description String
+  shortDesc   String?
+
+  // Catégorisation (noms des catégories/gammes — référence souple)
+  category String  // Nom de la catégorie (ex: "Nettoyants")
+  ranges   String[] // Noms des gammes (ex: ["Parapharmacie", "Pharmacie"])
+  skinType String[] // ["grasse", "mixte", "sensible", "acnéique"]
+
+  // Informations produit
+  volume   String?
+  price    Float?
+  oldPrice Float?
+
+  // Détails additionnels
+  colors  String[]
+  details String[]
+  reviewsData Json?
+
+  // Ingrédients et composition
+  activeIngredients String[]
+  ingredients       String[]
+
+  // Médias
+  imageUrl String
+  images   String[]
+  gallery  String[]
+
+  // Utilisation & résultats (accordéon style KIKO)
+  usageInstructions String?
+  benefits          String[]
+  testDescription   String? // Section "TEST" — texture, formule, expérience
+  pack              String? // Section "PACK" — infos emballage/contenant
+
+  // Disponibilité
+  inStock  Boolean @default(true)
+  isActive Boolean @default(true)
+  isBestSeller Boolean @default(false)
+
+  // Relations avec les points de vente
+  storeIds String[] @db.ObjectId
+  stores   Store[]  @relation(fields: [storeIds], references: [id])
+
+  // Métadonnées
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("products")
+}
+
+// ====================================
+// MODÈLE : Point de Vente
+// ====================================
+model Store {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  slug String @unique
+
+  // Adresse complète
+  address    String
+  city       String
+  postalCode String
+  country    String @default("France")
+
+  // Coordonnées GPS (pour la carte)
+  lat Float
+  lng Float
+
+  // Gammes disponibles dans ce point de vente (noms)
+  ranges String[]
+
+  // Informations de contact
+  phone         String?
+  email         String?
+  website       String?
+  googleMapsUrl String?
+
+  // Horaires
+  openingHours Json?
+
+  // Services disponibles
+  services String[]
+
+  // Statut
+  isActive   Boolean @default(true)
+  isFeatured Boolean @default(false)
+
+  // Relations avec les produits
+  productIds String[]  @db.ObjectId
+  products   Product[] @relation(fields: [productIds], references: [id])
+
+  // Métadonnées
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postalCode])
+  @@index([city])
+  @@map("stores")
+}
+
+// ====================================
+// MODÈLE : Vidéos Favorites
+// ====================================
+model FavoriteVideo {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  video     String  // Chemin ou URL vers la vidéo
+  thumbnail String? // Chemin ou URL vers la miniature
+  isActive  Boolean @default(true)
+  order     Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("favorite_videos")
+}

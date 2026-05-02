@@ -5,8 +5,8 @@ import { Pause, Play, Volume2, VolumeX } from "lucide-react";
 
 const OurStorySection = () => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const videoRef = useRef(null);
-  const [isInView, setIsInView] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [, setIsInView] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
 
