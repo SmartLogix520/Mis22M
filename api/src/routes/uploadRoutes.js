@@ -1,67 +1,55 @@
 // api/src/routes/uploadRoutes.js
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
+import cloudinary from '../config/cloudinary.js';
 
 const router = express.Router();
 
-// Dossier d'upload (support Vercel via /tmp)
-const isVercel = process.env.VERCEL === '1' || !!process.env.VERCEL;
-const uploadDir = isVercel 
-    ? path.join('/tmp', 'uploads') 
-    : path.join(process.cwd(), 'uploads');
-
-try {
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-    }
-} catch (err) {
-    console.warn('⚠️ Impossible de créer le dossier d\'upload:', err.message);
-}
-
-// Configuration de multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
+// Utilisation de memoryStorage pour Cloudinary
+const storage = multer.memoryStorage();
 const upload = multer({ 
     storage,
-    limits: { fileSize: 20 * 1024 * 1024 }, // limite 10MB
+    limits: { fileSize: 10 * 1024 * 1024 }, // limite 10MB
 });
 
-// Endpoint pour uploader plusieurs images
-router.post('/', upload.array('images', 10), (req, res) => {
+// Endpoint pour uploader plusieurs images vers Cloudinary
+router.post('/', upload.array('images', 10), async (req, res) => {
     try {
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ success: false, message: 'Aucun fichier uploadé' });
         }
 
-        // Construire l'URL de base du serveur pour les URLs absolues
-        const protocol = req.protocol;
-        const host = req.get('host');
-        const baseUrl = `${protocol}://${host}`;
-
-        // Retourner les URLs absolues — le frontend pourra accéder via http://localhost:5001/uploads/filename.ext
-        const urls = req.files.map(file => {
-            return `${baseUrl}/uploads/${file.filename}`;
+        // Upload de chaque fichier vers Cloudinary
+        const uploadPromises = req.files.map(file => {
+            return new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    {
+                        folder: 'mis22m_uploads',
+                    },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result.secure_url);
+                    }
+                );
+                uploadStream.end(file.buffer);
+            });
         });
 
-        // Wrapper dans le format ApiSuccessResponse attendu par le client
+        const urls = await Promise.all(uploadPromises);
+
         res.json({
             success: true,
-            message: `${urls.length} image(s) uploadée(s) avec succès`,
+            message: `${urls.length} image(s) uploadée(s) vers Cloudinary avec succès`,
             data: { urls },
             timestamp: new Date().toISOString()
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Erreur lors de l\'upload', error: error.message });
+        console.error('Cloudinary Upload Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erreur lors de l\'upload vers Cloudinary', 
+            error: error.message 
+        });
     }
 });
 
