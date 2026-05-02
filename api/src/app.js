@@ -59,9 +59,23 @@ if (process.env.NODE_ENV === 'development') {
 // Servir les fichiers d'images de façon statique
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-// ====================================
-// ROUTES
-// ====================================
+// Middleware pour connecter la DB avant chaque requête (Vercel cold start)
+let isConnected = false;
+const ensureDbConnected = async () => {
+    if (!isConnected) {
+        await connectDatabase();
+        isConnected = true;
+    }
+};
+
+app.use(async (req, res, next) => {
+    try {
+        await ensureDbConnected();
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 
 // Route de statut / health check
 app.get('/api/health', (req, res) => {
@@ -96,26 +110,5 @@ app.use('/api/upload', uploadRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// ====================================
-// INITIALISATION DB (pour Vercel — connexion à la première requête)
-// ====================================
-let isConnected = false;
-
-const ensureDbConnected = async () => {
-    if (!isConnected) {
-        await connectDatabase();
-        isConnected = true;
-    }
-};
-
-// Middleware pour connecter la DB avant chaque requête (Vercel cold start)
-app.use(async (req, res, next) => {
-    try {
-        await ensureDbConnected();
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
 
 export default app;
