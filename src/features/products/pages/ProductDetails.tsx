@@ -97,6 +97,8 @@ export default function ProductDetails() {
   const hasOldPrice   = !!product.oldPrice && product.oldPrice > productPrice;
   const benefitsArr    = product.benefits    ?? [];
   const ingredientsArr = product.ingredients ?? [];
+  const carouselImages = product.carouselImages ?? [];
+  const reviewsArr     = Array.isArray(product.customReviews) ? product.customReviews : (product.customReviews ? JSON.parse(product.customReviews as string) : []);
 
   return (
     <div className="bg-white min-h-screen">
@@ -249,10 +251,40 @@ export default function ProductDetails() {
         </div>
       </motion.section>
 
+      {/* ─── NOUVEAU: Carrousel Paramétrable ─────────────────────────────────── */}
+      {carouselImages.length > 0 && (
+        <section className="px-4 py-8 mb-4">
+          {product.carouselName && <h2 className="text-center font-bold text-lg mb-6">{product.carouselName}</h2>}
+          <div className="flex gap-4 overflow-x-auto snap-x pb-4">
+            {carouselImages.map((img: string, i: number) => (
+              <img key={i} src={img} alt={`caroussel-${i}`} className="snap-center shrink-0 w-[80vw] max-w-sm rounded-lg object-cover bg-gray-50 aspect-video shadow-md" />
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* ─── Bouton "Trouve un point de vente" ──────────────────────────────── */}
       <LocationButton />
 
-      {/* ─── Avis ───────────────────────────────────────────────────────────── */}
+      {/* ─── NOUVEAU: Avis Clients Défilants ────────────────────────────────── */}
+      {reviewsArr.length > 0 && (
+        <section className="px-4 py-8 bg-gray-50 border-y border-gray-100 overflow-hidden">
+          {product.reviewsTitle && <h2 className="text-center font-bold text-lg mb-6">{product.reviewsTitle}</h2>}
+          <div className="flex gap-6 animate-marquee whitespace-nowrap overflow-x-auto pb-4 no-scrollbar">
+            {reviewsArr.map((r: any, i: number) => (
+              <div key={i} className="shrink-0 w-[70vw] max-w-xs bg-white p-5 rounded-2xl shadow-sm border border-gray-100 inline-block whitespace-normal">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-semibold text-gray-800 text-sm">{r.author}</span>
+                  <span className="text-yellow-400 text-xs">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed italic">"{r.text}"</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ─── Anciens Avis (si existants) ────────────────────────────────────── */}
       {product.reviewsData && <ProductReviews reviews={product.reviewsData} />}
 
       {/* ─── Bouton "Trouve un point de vente" ──────────────────────────────── */}

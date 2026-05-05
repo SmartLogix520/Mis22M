@@ -17,9 +17,8 @@ export default function StoresPage() {
   const [mapZoom, setMapZoom] = useState(6);
 
   const [filters, setFilters] = useState({
-    search: '',
-    city: '',
-    postalCode: '',
+    wilaya: '',
+    commune: '',
     range: '',
     page: 1,
     limit: 500, // On charge plus pour la map

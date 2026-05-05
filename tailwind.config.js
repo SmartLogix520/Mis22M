@@ -15,11 +15,16 @@ export default {
           "0%, 100%": { transform: "scale(1)" },
           "50%": { transform: "scale(1.05)" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
       },
 
       animation: {
         scroll: "scroll 20s linear infinite",
         slowZoom: "slowZoom 6s ease-in-out infinite",
+        marquee: "marquee 25s linear infinite",
       },
     },
   },

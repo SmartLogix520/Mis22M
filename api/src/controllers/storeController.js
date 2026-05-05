@@ -8,8 +8,8 @@ export class StoreController {
     static async getAllStores(req, res, next) {
         try {
             const filters = {
-                postalCode: req.query.postalCode,
-                city: req.query.city,
+                commune: req.query.commune,
+                wilaya: req.query.wilaya,
                 range: req.query.range,
                 search: req.query.search,
                 page: req.query.page || 1,
@@ -31,12 +31,12 @@ export class StoreController {
         }
     }
 
-    // GET /api/stores/search/location?postalCode=75000&radius=50&range=Pharmacie
+    // GET /api/stores/search/location?commune=75000&radius=50&range=Pharmacie
     static async searchByLocation(req, res, next) {
         try {
-            const { postalCode, radius, range } = req.query;
-            if (!postalCode) return ApiResponse.badRequest(res, 'Le code postal est requis');
-            const stores = await StoreService.searchStoresByLocation(postalCode, parseInt(radius) || 50, range);
+            const { commune, radius, range } = req.query;
+            if (!commune) return ApiResponse.badRequest(res, 'La commune est requise');
+            const stores = await StoreService.searchStoresByLocation(commune, parseInt(radius) || 50, range);
             return ApiResponse.success(res, stores, `${stores.length} point(s) de vente trouvé(s)`);
         } catch (error) { next(error); }
     }
@@ -63,8 +63,8 @@ export class StoreController {
     static async createStore(req, res, next) {
         try {
             const storeData = req.body;
-            if (!storeData.name || !storeData.address || !storeData.city) {
-                return ApiResponse.badRequest(res, 'Nom, adresse et ville sont requis');
+            if (!storeData.name || !storeData.address || !storeData.wilaya) {
+                return ApiResponse.badRequest(res, 'Nom, adresse et wilaya sont requis');
             }
             if (!storeData.lat || !storeData.lng) {
                 return ApiResponse.badRequest(res, 'Coordonnées GPS (lat/lng) sont requises');

@@ -1,5 +1,5 @@
-// src/features/admin/components/StoreForm.tsx
 import { useState } from 'react';
+import { WILAYA_NAMES } from '../../../shared/constants/algeria';
 import { storesAPI, type Store, type Range } from '../../../services/api';
 
 interface Props {
@@ -13,9 +13,9 @@ export default function StoreForm({ store, ranges, onSuccess, onCancel }: Props)
   const [form, setForm] = useState({
     name:         store?.name         ?? '',
     address:      store?.address      ?? '',
-    city:         store?.city         ?? '',
-    postalCode:   store?.postalCode   ?? '',
-    country:      store?.country      ?? 'France',
+    wilaya:       store?.wilaya       ?? '',
+    commune:      store?.commune      ?? '',
+    country:      store?.country      ?? 'Algeria',
     lat:          store?.lat          ?? '',
     lng:          store?.lng          ?? '',
     phone:        store?.phone        ?? '',
@@ -27,6 +27,7 @@ export default function StoreForm({ store, ranges, onSuccess, onCancel }: Props)
     isFeatured:   store?.isFeatured   ?? false,
     isActive:     store?.isActive     ?? true,
   });
+
   const [saving, setSaving] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,19 +57,41 @@ export default function StoreForm({ store, ranges, onSuccess, onCancel }: Props)
     }
   };
 
-  const handleExtract = () => {
+  const handleExtract = async () => {
     if (!form.googleMapsUrl) return;
     setExtracting(true);
-    setTimeout(() => {
+    
+    try {
         const extracted = extractGoogleMapsData(form.googleMapsUrl);
+        
+        let fetchedWilaya = form.wilaya;
+        let fetchedCommune = form.commune;
+        
+        // Reverse Geocoding using Nominatim
+        if (extracted.lat && extracted.lng) {
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${extracted.lat}&lon=${extracted.lng}&format=json&accept-language=fr`);
+                const data = await res.json();
+                if (data && data.address) {
+                    fetchedWilaya = data.address.state || data.address.county || data.address.region || fetchedWilaya;
+                    fetchedCommune = data.address.town || data.address.village || data.address.city || data.address.suburb || data.address.county || fetchedCommune;
+                }
+            } catch (e) {
+                console.error('Erreur reverse geocoding:', e);
+            }
+        }
+        
         setForm(prev => ({
             ...prev,
             name: extracted.name || prev.name,
             lat: extracted.lat ? String(extracted.lat) : prev.lat,
-            lng: extracted.lng ? String(extracted.lng) : prev.lng
+            lng: extracted.lng ? String(extracted.lng) : prev.lng,
+            wilaya: fetchedWilaya,
+            commune: fetchedCommune
         }));
+    } finally {
         setExtracting(false);
-    }, 500);
+    }
   };
 
   const toggle = (value: string, list: string[]) =>
@@ -123,8 +146,25 @@ export default function StoreForm({ store, ranges, onSuccess, onCancel }: Props)
       {field('Adresse *', 'address', 'text', '12 rue de la Paix')}
 
       <div className="grid grid-cols-2 gap-4">
-        {field('Ville *', 'city', 'text', 'Paris')}
-        {field('Code postal *', 'postalCode', 'text', '75001')}
+        <div>
+          <label className="block text-xs text-white/40 mb-1.5">Wilaya *</label>
+          <select
+            value={form.wilaya}
+            onChange={e => setForm(f => ({ ...f, wilaya: e.target.value }))}
+            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-violet-500 transition appearance-none"
+          >
+            <option value="">Sélectionner une wilaya</option>
+            {WILAYA_NAMES.map((name, index) => {
+              const code = (index + 1).toString().padStart(2, '0');
+              return (
+                <option key={name} value={name}>
+                  {code} - {name}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        {field('Commune *', 'commune', 'text', 'Sidi M\'hamed')}
       </div>
 
       <div className="grid grid-cols-2 gap-4">

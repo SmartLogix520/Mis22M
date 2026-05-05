@@ -186,8 +186,8 @@ export interface Store {
   name: string;
   slug: string;
   address: string;
-  city: string;
-  postalCode: string;
+  wilaya: string;
+  commune: string;
   country: string;
   lat: number;
   lng: number;
@@ -230,6 +230,10 @@ export interface Product {
   benefits: string[];
   testDescription?: string; // Section "TEST" — texture, formule
   pack?: string;            // Section "PACK" — infos emballage
+  carouselName?: string;
+  carouselImages?: string[];
+  reviewsTitle?: string;
+  customReviews?: any;
   inStock: boolean;
   isActive: boolean;
   isBestSeller?: boolean;

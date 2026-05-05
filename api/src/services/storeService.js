@@ -3,16 +3,22 @@ import prisma from '../config/database.js';
 
 export class StoreService {
 
+    static mapStore(store) {
+        if (!store) return store;
+        const { city, postalCode, ...rest } = store;
+        return { ...rest, wilaya: city, commune: postalCode };
+    }
+
     static async getAllStores(filters = {}) {
-        const { postalCode, city, range, search, page = 1, limit = 50 } = filters;
+        const { commune, wilaya, range, search, page = 1, limit = 50 } = filters;
         const skip = (page - 1) * limit;
 
         const where = {
             isActive: true,
-            ...(postalCode && { postalCode: { startsWith: postalCode } }),
-            ...(city && { city: { equals: city, mode: 'insensitive' } }),
+            ...(commune && { postalCode: { contains: commune, mode: 'insensitive' } }),
+            ...(wilaya && { city: { equals: wilaya, mode: 'insensitive' } }),
             ...(range && { ranges: { has: range } }),
-            ...(search && { OR: [{ name: { contains: search, mode: 'insensitive' } }, { city: { contains: search, mode: 'insensitive' } }, { address: { contains: search, mode: 'insensitive' } }] }),
+            ...(search && { OR: [{ name: { contains: search, mode: 'insensitive' } }, { city: { contains: search, mode: 'insensitive' } }, { address: { contains: search, mode: 'insensitive' } }, { postalCode: { contains: search, mode: 'insensitive' } }] }),
         };
 
         const [stores, total] = await Promise.all([
@@ -24,7 +30,7 @@ export class StoreService {
             prisma.store.count({ where })
         ]);
 
-        return { stores, pagination: { total, page: parseInt(page), limit: parseInt(limit), totalPages: Math.ceil(total / limit) } };
+        return { stores: stores.map(StoreService.mapStore), pagination: { total, page: parseInt(page), limit: parseInt(limit), totalPages: Math.ceil(total / limit) } };
     }
 
     static async getStoreById(id) {
@@ -33,20 +39,21 @@ export class StoreService {
             include: { products: { where: { isActive: true }, orderBy: { name: 'asc' } } }
         });
         if (!store) throw new Error('Point de vente non trouvé');
-        return store;
+        return StoreService.mapStore(store);
     }
 
-    static async searchStoresByLocation(postalCode, radius = 50, range = null) {
+    static async searchStoresByLocation(commune, radius = 50, range = null) {
         const where = {
             isActive: true,
-            postalCode: { startsWith: postalCode.substring(0, 2) }, // Par département
+            postalCode: { startsWith: commune.substring(0, 2) }, // Par département (maybe adjust this if needed)
             ...(range && range !== 'Tous' && { ranges: { has: range } })
         };
-        return prisma.store.findMany({
+        const stores = await prisma.store.findMany({
             where,
             orderBy: { name: 'asc' },
             select: { id: true, name: true, address: true, city: true, postalCode: true, lat: true, lng: true, ranges: true, phone: true, googleMapsUrl: true, services: true }
         });
+        return stores.map(StoreService.mapStore);
     }
 
     static async getNearbyStores(lat, lng, radiusKm = 50) {
@@ -56,7 +63,7 @@ export class StoreService {
         });
 
         return stores
-            .map(store => ({ ...store, distance: Math.round(StoreService.haversine(lat, lng, store.lat, store.lng) * 10) / 10 }))
+            .map(store => ({ ...StoreService.mapStore(store), distance: Math.round(StoreService.haversine(lat, lng, store.lat, store.lng) * 10) / 10 }))
             .filter(store => store.distance <= radiusKm)
             .sort((a, b) => a.distance - b.distance);
     }
@@ -70,21 +77,27 @@ export class StoreService {
     }
 
     static async createStore(storeData) {
-        const { productIds, ...data } = storeData;
+        const { productIds, wilaya, commune, ...data } = storeData;
         const slug = data.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-        return prisma.store.create({
-            data: { ...data, slug, ...(productIds && { products: { connect: productIds.map(id => ({ id })) } }) },
+        const created = await prisma.store.create({
+            data: { ...data, city: wilaya, postalCode: commune, slug, ...(productIds && { products: { connect: productIds.map(id => ({ id })) } }) },
             include: { products: true }
         });
+        return StoreService.mapStore(created);
     }
 
     static async updateStore(id, storeData) {
-        const { productIds, ...data } = storeData;
-        return prisma.store.update({
+        const { productIds, wilaya, commune, ...data } = storeData;
+        const payload = { ...data };
+        if (wilaya !== undefined) payload.city = wilaya;
+        if (commune !== undefined) payload.postalCode = commune;
+        
+        const updated = await prisma.store.update({
             where: { id },
-            data: { ...data, ...(productIds && { products: { set: productIds.map(id => ({ id })) } }) },
+            data: { ...payload, ...(productIds && { products: { set: productIds.map(id => ({ id })) } }) },
             include: { products: true }
         });
+        return StoreService.mapStore(updated);
     }
 
     static async deleteStore(id) {
@@ -97,6 +110,6 @@ export class StoreService {
             prisma.store.count({ where: { isActive: true } }),
             prisma.store.groupBy({ by: ['city'], where: { isActive: true }, _count: true, orderBy: { _count: { city: 'desc' } }, take: 10 })
         ]);
-        return { total, topCities: byCity };
+        return { total, topCities: byCity.map(b => ({ wilaya: b.city, count: b._count })) };
     }
 }

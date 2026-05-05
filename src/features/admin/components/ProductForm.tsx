@@ -36,7 +36,22 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
     inStock:           product?.inStock           ?? true,
     isActive:          product?.isActive          ?? true,
     isBestSeller:      product?.isBestSeller      ?? false,
+    carouselName:      product?.carouselName      ?? '',
+    carouselImages:    product?.carouselImages?.join(', ') ?? '',
+    reviewsTitle:      product?.reviewsTitle      ?? '',
   });
+
+  const [reviewsList, setReviewsList] = useState<{ author: string; rating: number; text: string }[]>(
+    () => {
+      if (!product?.customReviews) return [];
+      try {
+        return Array.isArray(product.customReviews) ? product.customReviews : JSON.parse(product.customReviews as string);
+      } catch {
+        return [];
+      }
+    }
+  );
+  const [newReview, setNewReview] = useState({ author: '', rating: 5, text: '' });
 
   // Gestion des couleurs avec nom + valeur hex
   const [colorsList, setColorsList] = useState<{ name: string; hex: string }[]>(
@@ -95,6 +110,41 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
     });
   };
 
+  const handleCarouselFiles = async (files: File[]) => {
+    const valid = files.filter(f => f.type.startsWith('image/'));
+    if (!valid.length) return;
+    setUploadingImage(true);
+    try {
+      const res = await uploadAPI.uploadMultiple(valid);
+      const urls = res.data.urls;
+      setForm(f => {
+        const currentImages = f.carouselImages ? f.carouselImages.split(',').map(s => s.trim()).filter(Boolean) : [];
+        return { ...f, carouselImages: [...currentImages, ...urls].join(', ') };
+      });
+    } catch {
+      setError("Erreur lors de l'upload des images du carrousel.");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const removeCarouselImage = (url: string) => {
+    setForm(f => {
+      const rest = f.carouselImages ? f.carouselImages.split(',').map(s => s.trim()).filter(Boolean) : [];
+      return { ...f, carouselImages: rest.filter(u => u !== url).join(', ') };
+    });
+  };
+
+  // ─── Avis ─────────────────────────────────────────────────────────────
+  const addReview = () => {
+    if (!newReview.author.trim() || !newReview.text.trim()) return;
+    setReviewsList(prev => [...prev, newReview]);
+    setNewReview({ author: '', rating: 5, text: '' });
+  };
+  const removeReview = (idx: number) => {
+    setReviewsList(prev => prev.filter((_, i) => i !== idx));
+  };
+
   // ─── Couleurs ─────────────────────────────────────────────────────────────
   const addColor = () => {
     if (!newColorName.trim()) return;
@@ -124,6 +174,8 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
         benefits:          form.benefits.split(',').map(s => s.trim()).filter(Boolean),
         // Couleurs stockées au format "Nom nuance|#hex"
         colors:            colorsList.map(c => `${c.name}|${c.hex}`),
+        carouselImages:    form.carouselImages.split(',').map(s => s.trim()).filter(Boolean),
+        customReviews:     reviewsList,
       };
       if (product) {
         await productsAPI.update(product.id, payload);
@@ -314,6 +366,83 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
         <div className="p-4 border border-white/10 rounded-xl space-y-4 bg-white/2">
           {renderField('Ingrédients actifs (virgules)', 'activeIngredients', 'text', 'Acide salicylique 2%, Niacinamide, Zinc PCA')}
           {renderTextarea('INGREDIENT LIST — Liste complète des ingrédients', 'ingredients', 'AQUA, GLYCERIN, NIACINAMIDE, ZINC PCA, ...', 4)}
+        </div>
+      )}
+
+      {/* ─── NOUVEAU: Section Carrousel ─────────────────────────────────── */}
+      {renderSectionHeader('carousel', '🎠 Section Carrousel (Images)')}
+      {openSection === 'carousel' && (
+        <div className="p-4 border border-white/10 rounded-xl space-y-4 bg-white/2">
+          <p className="text-xs text-white/30 -mt-1">Section d'images défilantes affichée sous les ingrédients</p>
+          {renderField('Titre de la section carrousel', 'carouselName', 'text', 'Nos résultats en images')}
+          
+          <div>
+            <label className={labelCls}>Images du carrousel</label>
+            <div
+              onDragOver={e => e.preventDefault()}
+              onDrop={e => { e.preventDefault(); handleCarouselFiles(Array.from(e.dataTransfer.files)); }}
+              className="w-full border-2 border-dashed border-white/10 bg-white/5 rounded-xl p-4 text-center hover:border-violet-500 hover:bg-white/10 transition cursor-pointer mb-3"
+            >
+              <input type="file" multiple accept="image/*" className="hidden" id="carouselFileInput" onChange={e => e.target.files && handleCarouselFiles(Array.from(e.target.files))} />
+              <button type="button" onClick={() => document.getElementById('carouselFileInput')?.click()} className="text-sm text-white/60">
+                {uploadingImage ? '⏳ Upload...' : 'Glissez vos images ici ou cliquez pour parcourir'}
+              </button>
+            </div>
+
+            {form.carouselImages && (
+              <div className="flex gap-3 overflow-x-auto pb-2">
+                {form.carouselImages.split(',').map(s => s.trim()).filter(Boolean).map((url, i) => (
+                  <div key={url + i} className="relative shrink-0 w-24 h-24 bg-black/50 rounded-xl overflow-hidden border border-white/10 group">
+                    <img src={url} alt={`caroussel-${i}`} className="w-full h-full object-cover" />
+                    <button type="button" onClick={() => removeCarouselImage(url)} className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ─── NOUVEAU: Section Avis ──────────────────────────────────────── */}
+      {renderSectionHeader('reviews', '⭐ Section Avis Clients')}
+      {openSection === 'reviews' && (
+        <div className="p-4 border border-white/10 rounded-xl space-y-4 bg-white/2">
+          <p className="text-xs text-white/30 -mt-1">Avis défilants affichés en bas de la page</p>
+          {renderField('Titre de la section avis', 'reviewsTitle', 'text', 'Ce qu\'ils en pensent')}
+
+          <div className="space-y-3">
+            {reviewsList.map((r, i) => (
+              <div key={i} className="flex flex-col gap-2 bg-white/5 border border-white/10 p-3 rounded-lg relative">
+                <button type="button" onClick={() => removeReview(i)} className="absolute top-2 right-2 text-white/30 hover:text-red-400 text-xs">✕</button>
+                <div className="flex justify-between items-center pr-6">
+                  <span className="text-sm font-medium text-white">{r.author}</span>
+                  <span className="text-yellow-400 text-xs">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                </div>
+                <p className="text-xs text-white/70 italic">"{r.text}"</p>
+              </div>
+            ))}
+
+            <div className="bg-black/20 p-3 rounded-lg border border-white/5 mt-4 space-y-3">
+              <p className="text-xs text-white/40 mb-2">Ajouter un avis</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelCls}>Auteur</label>
+                  <input type="text" value={newReview.author} onChange={e => setNewReview({...newReview, author: e.target.value})} className={inputCls} placeholder="Nom" />
+                </div>
+                <div>
+                  <label className={labelCls}>Note (1-5)</label>
+                  <input type="number" min="1" max="5" value={newReview.rating} onChange={e => setNewReview({...newReview, rating: parseInt(e.target.value)})} className={inputCls} />
+                </div>
+              </div>
+              <div>
+                <label className={labelCls}>Message</label>
+                <textarea value={newReview.text} onChange={e => setNewReview({...newReview, text: e.target.value})} className={`${inputCls} resize-none`} rows={2} placeholder="Excellent produit..." />
+              </div>
+              <button type="button" onClick={addReview} className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm transition">
+                + Ajouter l'avis
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

@@ -86,6 +86,12 @@ model Product {
   testDescription   String? // Section "TEST" — texture, formule, expérience
   pack              String? // Section "PACK" — infos emballage/contenant
 
+  // Sections additionnelles (paramétrables depuis admin)
+  carouselName   String?
+  carouselImages String[]
+  reviewsTitle   String?
+  customReviews  Json?    // Liste d'avis { author, rating, text }
+
   // Disponibilité
   inStock  Boolean @default(true)
   isActive Boolean @default(true)
@@ -114,7 +120,7 @@ model Store {
   address    String
   city       String
   postalCode String
-  country    String @default("France")
+  country    String @default("Algeria")
 
   // Coordonnées GPS (pour la carte)
   lat Float

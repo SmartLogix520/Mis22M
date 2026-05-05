@@ -31,7 +31,7 @@ export default function StoreCard({ store }: Props) {
       <div className="flex items-start gap-2 text-sm text-muted-foreground">
         <span className="mt-0.5 shrink-0">📍</span>
         <span className="leading-snug">
-          {store.address}, {store.postalCode} {store.city}
+          {store.address}, {store.commune} {store.wilaya}
         </span>
       </div>
 
