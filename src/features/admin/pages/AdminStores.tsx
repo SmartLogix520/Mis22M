@@ -103,7 +103,7 @@ export default function AdminStores() {
                     {store.name}
                     {store.isFeatured && <span className="ml-2 text-yellow-400 text-xs">⭐</span>}
                   </td>
-                  <td className="px-5 py-3 text-white/50 hidden md:table-cell">{store.city} {store.postalCode}</td>
+                  <td className="px-5 py-3 text-white/50 hidden md:table-cell">{store.wilaya} {store.commune}</td>
                   <td className="px-5 py-3 hidden lg:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {store.ranges.slice(0, 3).map(r => (

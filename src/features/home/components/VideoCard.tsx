@@ -21,26 +21,40 @@ export default function VideoCard({ video, thumbnail, title }: Props) {
     }
   };
 
-  return (
-    <div className="relative rounded-2xl overflow-hidden shadow-md aspect-[9/16]">
-      <video
-        ref={videoRef}
-        src={video}
-        poster={thumbnail}
-        className="w-full h-full object-cover"
-        controls={playing}
-        playsInline
-        preload="metadata"
-        onPlay={() => setPlaying(true)}
-      />
+  const isGoogleDrive = video.includes('drive.google.com');
+  const driveEmbedUrl = isGoogleDrive ? video.replace(/\/view.*$/, '/preview') : '';
 
-      {!playing && (
-        <button
-          onClick={handlePlay}
-          className="absolute inset-0 flex items-center justify-center"
-        >
-          <div className="bg-white/80 rounded-full p-3 text-lg">▶</div>
-        </button>
+  return (
+    <div className="relative rounded-2xl overflow-hidden shadow-md aspect-[9/16] bg-gray-100">
+      {isGoogleDrive ? (
+        <iframe
+          src={driveEmbedUrl}
+          className="w-full h-full border-none"
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+        />
+      ) : (
+        <>
+          <video
+            ref={videoRef}
+            src={video}
+            poster={thumbnail}
+            className="w-full h-full object-cover"
+            controls={playing}
+            playsInline
+            preload="metadata"
+            onPlay={() => setPlaying(true)}
+          />
+
+          {!playing && (
+            <button
+              onClick={handlePlay}
+              className="absolute inset-0 flex items-center justify-center z-10"
+            >
+              <div className="bg-white/80 rounded-full p-3 text-lg">▶</div>
+            </button>
+          )}
+        </>
       )}
 
       {/* overlay gradient pour lisibilité */}

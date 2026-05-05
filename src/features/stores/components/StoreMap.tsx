@@ -157,7 +157,7 @@ export default function StoreMap({ stores, center, zoom = 6, selectedStore, onSt
                         <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-primary" />
                         <div className="text-xs leading-relaxed">
                           <p>{store.address}</p>
-                          <p>{store.postalCode} {store.city}</p>
+                          <p>{store.commune} {store.wilaya}</p>
                         </div>
                       </div>
                       {store.phone && (

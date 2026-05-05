@@ -19,7 +19,6 @@ export default function StoresPage() {
   const [filters, setFilters] = useState({
     wilaya: '',
     commune: '',
-    range: '',
     page: 1,
     limit: 500, // On charge plus pour la map
   });
@@ -104,7 +103,7 @@ export default function StoresPage() {
 
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-8">
-          <StoreFilters filters={filters} ranges={ranges} onChange={handleFilterChange} />
+          <StoreFilters filters={filters} onChange={handleFilterChange} />
         </div>
 
         {error && (

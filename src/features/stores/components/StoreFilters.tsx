@@ -4,19 +4,17 @@ import type { Range } from '../../../services/api';
 interface Filters {
   wilaya: string;
   commune: string;
-  range: string;
 }
 
 interface Props {
   filters: Filters;
-  ranges: Range[];
   onChange: (key: string, value: string) => void;
 }
 
-export default function StoreFilters({ filters, ranges, onChange }: Props) {
+export default function StoreFilters({ filters, onChange }: Props) {
   return (
     <div className="bg-card border border-border rounded-2xl p-4 mb-8 shadow-sm">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* Wilaya */}
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm z-10">🏙️</span>
@@ -52,29 +50,16 @@ export default function StoreFilters({ filters, ranges, onChange }: Props) {
           />
         </div>
 
-        {/* Gamme — chargée dynamiquement depuis l'API */}
-        <select
-          value={filters.range}
-          onChange={e => onChange('range', e.target.value)}
-          className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
-        >
-          <option value="">Toutes les gammes</option>
-          {ranges.map(range => (
-            <option key={range.id} value={range.name}>
-              {range.name}
-            </option>
-          ))}
-        </select>
+
       </div>
 
       {/* Bouton reset */}
-      {(filters.wilaya || filters.commune || filters.range) && (
+      {(filters.wilaya || filters.commune) && (
         <div className="mt-3 flex justify-end">
           <button
             onClick={() => {
               onChange('wilaya', '');
               onChange('commune', '');
-              onChange('range', '');
             }}
             className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
           >

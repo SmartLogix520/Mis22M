@@ -98,7 +98,11 @@ export default function ProductDetails() {
   const benefitsArr    = product.benefits    ?? [];
   const ingredientsArr = product.ingredients ?? [];
   const carouselImages = product.carouselImages ?? [];
-  const reviewsArr     = Array.isArray(product.customReviews) ? product.customReviews : (product.customReviews ? JSON.parse(product.customReviews as string) : []);
+  const reviewsArrRaw = Array.isArray(product.customReviews) ? product.customReviews : (product.customReviews ? JSON.parse(product.customReviews as string) : []);
+  // Dupliquer pour le marquee si peu d'avis
+  const reviewsArr = reviewsArrRaw.length > 0 && reviewsArrRaw.length < 5 
+    ? [...reviewsArrRaw, ...reviewsArrRaw, ...reviewsArrRaw, ...reviewsArrRaw] 
+    : reviewsArrRaw;
 
   return (
     <div className="bg-white min-h-screen">
@@ -167,7 +171,16 @@ export default function ProductDetails() {
         <div className="mb-5">
           <h1 className="text-2xl font-bold text-black leading-tight mb-1">{product.name}</h1>
           {product.shortDesc && (
-            <p className="text-sm text-gray-500 mb-3">{product.shortDesc}</p>
+            <p className="text-sm text-gray-500 mb-2">{product.shortDesc}</p>
+          )}
+          {product.ranges && product.ranges.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {product.ranges.map(range => (
+                <span key={range} className="text-[10px] uppercase tracking-wider font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                  Gamme {range}
+                </span>
+              ))}
+            </div>
           )}
         </div>
 
@@ -270,9 +283,9 @@ export default function ProductDetails() {
       {reviewsArr.length > 0 && (
         <section className="px-4 py-8 bg-gray-50 border-y border-gray-100 overflow-hidden">
           {product.reviewsTitle && <h2 className="text-center font-bold text-lg mb-6">{product.reviewsTitle}</h2>}
-          <div className="flex gap-6 animate-marquee whitespace-nowrap overflow-x-auto pb-4 no-scrollbar">
+          <div className="flex gap-6 animate-marquee flex-nowrap pb-4 no-scrollbar">
             {reviewsArr.map((r: any, i: number) => (
-              <div key={i} className="shrink-0 w-[70vw] max-w-xs bg-white p-5 rounded-2xl shadow-sm border border-gray-100 inline-block whitespace-normal">
+              <div key={i} className="shrink-0 w-[70vw] max-w-xs bg-white p-5 rounded-2xl shadow-sm border border-gray-100 whitespace-normal">
                 <div className="flex justify-between items-center mb-3">
                   <span className="font-semibold text-gray-800 text-sm">{r.author}</span>
                   <span className="text-yellow-400 text-xs">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
