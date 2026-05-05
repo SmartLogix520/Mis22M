@@ -1,5 +1,5 @@
 import { WILAYA_NAMES } from '../../../shared/constants/algeria';
-import type { Range } from '../../../services/api';
+
 
 interface Filters {
   wilaya: string;

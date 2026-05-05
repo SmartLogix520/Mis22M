@@ -1,6 +1,6 @@
 // src/features/stores/pages/StoresPage.tsx
 import { useState, useEffect } from 'react';
-import { storesAPI, rangesAPI, type Store, type Range } from '../../../services/api';
+import { storesAPI, type Store } from '../../../services/api';
 import StoreCard from '../components/StoreCard';
 import StoreFilters from '../components/StoreFilters';
 import StoreMap from '../components/StoreMap';
@@ -8,7 +8,7 @@ import { MapPin } from 'lucide-react';
 
 export default function StoresPage() {
   const [stores, setStores] = useState<Store[]>([]);
-  const [ranges, setRanges] = useState<Range[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -36,11 +36,7 @@ export default function StoresPage() {
     }
   }, []);
 
-  useEffect(() => {
-    rangesAPI.getAll()
-      .then(res => setRanges(res.data))
-      .catch(console.error);
-  }, []);
+
 
   useEffect(() => {
     setLoading(true);
