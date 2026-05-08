@@ -29,21 +29,24 @@ export default function Navbar() {
 
         {/* CENTER MENU (desktop only) */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <Link
-            to="/produits"
-            className="hover:text-[var(--hover)] transition"
-          >
+          <Link to="/" className="hover:text-[var(--hover)] transition">
+            Accueil
+          </Link>
+          <Link to="/produits" className="hover:text-[var(--hover)] transition">
             Produits
           </Link>
 
-          <Link
+          {/* <Link
             to="/best-sellers"
             className="hover:text-[var(--hover)] transition"
           >
             Best Sellers
-          </Link>
+          </Link> */}
 
-          <Link to="/points-de-vente" className="hover:text-[var(--hover)] transition">
+          <Link
+            to="/points-de-vente"
+            className="hover:text-[var(--hover)] transition"
+          >
             Points de vente
           </Link>
         </nav>
@@ -65,6 +68,13 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden bg-[var(--primary)] border-t border-[var(--border)] px-4 py-3 flex flex-col gap-3">
           <Link
+            to="/"
+            onClick={() => setOpen(false)}
+            className="py-2 hover:text-[var(--hover)] transition"
+          >
+            Accueil
+          </Link>
+          <Link
             to="/produits"
             onClick={() => setOpen(false)}
             className="py-2 hover:text-[var(--hover)] transition"
@@ -72,13 +82,13 @@ export default function Navbar() {
             Produits
           </Link>
 
-          <Link
+          {/* <Link
             to="/best-sellers"
             onClick={() => setOpen(false)}
             className="py-2 hover:text-[var(--hover)] transition"
           >
             Best Sellers
-          </Link>
+          </Link> */}
 
           <Link
             to="/points-de-vente"

@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <RootLayout />,
     children: [
-      { index: true, element: <Home /> },
+      { path: "/", index: true, element: <Home /> },
       { path: "/category/:slug", element: <ProductList /> },
       { path: "/produits", element: <ProductList /> },
       { path: "/best-sellers", element: <ProductList /> },
@@ -41,12 +41,12 @@ export const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
-      { path: "dashboard",  element: <AdminDashboard /> },
-      { path: "stores",     element: <AdminStores /> },
-      { path: "products",   element: <AdminProducts /> },
+      { path: "dashboard", element: <AdminDashboard /> },
+      { path: "stores", element: <AdminStores /> },
+      { path: "products", element: <AdminProducts /> },
       { path: "categories", element: <AdminCategories /> },
-      { path: "ranges",     element: <AdminRanges /> },
-      { path: "favorites",  element: <AdminFavorites /> },
+      { path: "ranges", element: <AdminRanges /> },
+      { path: "favorites", element: <AdminFavorites /> },
     ],
   },
 ]);

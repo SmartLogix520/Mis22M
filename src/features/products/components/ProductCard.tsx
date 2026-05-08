@@ -18,15 +18,21 @@ export default function ProductCard({
   return (
     <div
       onClick={() => navigate(`/product/${id}`)}
-      className="bg-white rounded-xl shadow-md p-3"
+      className="bg-white rounded-xl shadow-md p-3 flex flex-col h-full"
     >
-      <img src={image} className="w-full h-[180px] object-contain rounded-lg" />
+      <div className="w-full h-[180px] flex items-center justify-center">
+        <img src={image} className="max-h-full object-contain" />
+      </div>
 
       <h3 className="mt-2 font-semibold text-sm">{name}</h3>
 
-      {description && <p className="text-xs text-gray-500">{description}</p>}
+      {description && (
+        <p className="text-xs text-gray-500 line-clamp-2 min-h-[32px]">
+          {description}
+        </p>
+      )}
 
-      <div className="mt-2 flex justify-between items-center">
+      <div className="mt-auto flex justify-between items-center">
         {price && <span className="font-bold">{price} DA</span>}
       </div>
     </div>

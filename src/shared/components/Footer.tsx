@@ -69,10 +69,10 @@ export default function Footer() {
           </Link>
         </FooterSection>
 
-        <FooterSection title="TENDANCES & LOOKS">
+        {/* <FooterSection title="TENDANCES & LOOKS">
           <p>Inspiration beauté</p>
           <p>Dernières tendances</p>
-        </FooterSection>
+        </FooterSection> */}
 
         <FooterSection title="À PROPOS">
           <Link to="/about" className="block hover:text-black">
@@ -83,10 +83,10 @@ export default function Footer() {
           </Link>
         </FooterSection>
 
-        <FooterSection title="CONDITIONS GÉNÉRALES">
+        {/* <FooterSection title="CONDITIONS GÉNÉRALES">
           <p>Politique de confidentialité</p>
           <p>Conditions d'utilisation</p>
-        </FooterSection>
+        </FooterSection> */}
       </div>
 
       {/* 🌍 LOCALISATION */}

@@ -3,6 +3,7 @@ import { productsAPI, type Product } from "../../../services/api";
 import ProductCard from "../../products/components/ProductCard";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { motion } from "framer-motion";
+import ProductCardSkeleton from "../../products/components/ProductCardSkeleton";
 
 export default function BestSellers() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -10,13 +11,14 @@ export default function BestSellers() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    productsAPI.getAll({ isBestSeller: true, limit: 10 })
+    productsAPI
+      .getAll({ isBestSeller: true, limit: 10 })
       .then((res) => {
         // Le backend filtre si inStock = true et isActive = true.
         // Si isBestSeller = true n'est pas géré nativement via product filter backend,
         // on fait un filter local pour le moment, ou on affiche directement s'il le remonte.
-        const best = res.data.products.filter(p => p.isBestSeller === true);
-        setBestSellers(best.length > 0 ? best : res.data.products); 
+        const best = res.data.products.filter((p) => p.isBestSeller === true);
+        setBestSellers(best.length > 0 ? best : res.data.products);
         // fallback au produits generaux si pas encore de bestsellers tagués en DB
       })
       .catch(console.error)
@@ -32,8 +34,25 @@ export default function BestSellers() {
     });
   };
 
-  if (loading || bestSellers.length === 0) return null;
+  if (loading) {
+    return (
+      <section className="px-4 py-10">
+        <h2 className="text-center font-semibold mb-4 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">
+          Best Sellers
+        </h2>
 
+        <div className="flex gap-4 overflow-x-auto no-scrollbar py-2">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="min-w-[220px]">
+              <ProductCardSkeleton />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (bestSellers.length === 0) return null;
   return (
     <motion.section
       initial={{ opacity: 0, y: 40 }}
@@ -56,13 +75,18 @@ export default function BestSellers() {
 
         <div
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scroll-smooth no-scrollbar py-2"
+          className="flex gap-4 overflow-x-auto scroll-smooth no-scrollbar py-2 items-stretch"
         >
           {bestSellers.map((item) => (
-            <div key={item.id} className="min-w-[220px]">
+            <div
+              key={item.id}
+              className="min-w-[220px] max-w-[220px] flex flex-col h-full"
+            >
               <ProductCard
                 id={item.id}
-                image={item.images?.[0] || item.imageUrl || "/assets/placeholder.png"}
+                image={
+                  item.images?.[0] || item.imageUrl || "/assets/placeholder.png"
+                }
                 name={item.name}
                 price={item.price || 0}
                 description={item.shortDesc || item.description || ""}
@@ -81,4 +105,3 @@ export default function BestSellers() {
     </motion.section>
   );
 }
-
